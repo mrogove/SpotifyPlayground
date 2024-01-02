@@ -3,7 +3,7 @@ scripts and other code for interacting with the Spotify Web API.
 
 For more on using the Spotify Web API and for generating your credentials, [go here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started).
 
-## SpotifyPlaylistExporter
+## SpotifyPlaylistExporter: playlists in, csv of tracklistings out
 Can't remember if you've used a track in a playlist before? Can't remember what playlist you put that track on?
 
 `SpotifyPlaylistExplorer` will take a list of public Spotify Playlist URIs (`playlists.txt`) and return the ordered tracklisting from those playlists.
