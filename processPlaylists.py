@@ -60,7 +60,7 @@ class SpotifyPlaylistExporter:
 # Main execution
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Export Spotify playlists to CSV.')
-    parser.add_argument('--delimiter', default=';;', help='Delimiter to use in the CSV file, default is comma (,)')
+    parser.add_argument('--delimiter', default=';;', help='Delimiter to use in the CSV file, default is `;;;`')
     args = parser.parse_args()
 
     start_time = time.time()
