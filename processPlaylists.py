@@ -1,3 +1,4 @@
+import argparse
 import requests
 import csv
 import json
@@ -36,16 +37,16 @@ class SpotifyPlaylistExporter:
         data = response.json()
         return data['name']
 
-    # by default, utilize a gonzo delimiter like ";;".
-    # artists, songs, albums all commonly have "," character.
-    def export_to_csv(self, playlist_uris, file_name, delimiter=';;;'):
+    def export_to_csv(self, playlist_uris, file_name, delimiter):
         with open(file_name, mode='w', newline='', encoding='utf-8') as file:
+            headers = ['Playlist Name', 'Playlist ID', 'Track URL', 'Track Name', 'Artist(s)', 'Album Name']
+            
+            file.write(delimiter.join(headers) + '\n')
             for uri in playlist_uris:
                 playlist_id = uri.split(':')[-1]
                 playlist_name = self.get_playlist_details(playlist_id)
                 tracks_info = self.get_playlist_tracks(playlist_id)
-                print(f"Retrieving playlist information for playlist {playlist_name}")
-                
+
                 for item in tracks_info:
                     track = item['track']
                     track_url = track['external_urls']['spotify']
@@ -53,16 +54,17 @@ class SpotifyPlaylistExporter:
                     artist_names = ', '.join(artist['name'] for artist in track['artists'])
                     album_name = track['album']['name']
 
-                    # Manually join the fields with the custom delimiter
                     row = delimiter.join([playlist_name, playlist_id, track_url, track_name, artist_names, album_name])
                     file.write(row + '\n')
 
 # Main execution
-# make sure code runs only when script executed directly
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Export Spotify playlists to CSV.')
+    parser.add_argument('--delimiter', default=';;', help='Delimiter to use in the CSV file, default is comma (,)')
+    args = parser.parse_args()
+
     start_time = time.time()
 
-    # grab credentials defined in init
     with open('config.json', 'r') as file:
         config = json.load(file)
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
     with open('playlists.txt', 'r') as file:
         playlist_uris = [line.strip() for line in file if line.strip()]
 
-    exporter.export_to_csv(playlist_uris, 'spotify_playlist_tracks.csv')
+    exporter.export_to_csv(playlist_uris, 'spotify_playlist_tracks.csv', args.delimiter)
 
     execution_time = time.time() - start_time
     print(f"Execution time: {execution_time} seconds")
